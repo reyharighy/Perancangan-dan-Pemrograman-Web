@@ -42,11 +42,25 @@ header h3, header a{
 .nav{
     font-size: 12px;
     padding: 0vh 0.7vw;
+    position: relative;
 }
 
-.icon{
+.icon, .icon-hover{
     margin-right: 5px;
     width: 1vw;
+}
+
+.icon-hover{
+    position: absolute;
+    display: none;
+}
+
+.nav:hover .icon-hover{
+    display: block;
+}
+
+.nav:hover .icon{
+    display: none;
 }
 
 section{
@@ -148,4 +162,67 @@ footer p, footer a{
 
 footer a:hover{
     color: white;
+}
+
+@media (min-width: 10px) and (max-width: 435px){
+    section{
+    place-content: center;}
+    
+    .log-seller{
+        width: 90%;
+        place-items: center;
+        margin: 18vh 4vw 6vh;
+    }
+    
+    #login-seller{
+        width: 76%;
+    }
+    #bg-img{
+        visibility: hidden;}
+
+    .ditel a {
+        padding: 1vh 1vw;
+    }
+    
+    header{
+        width: 90%;
+    }
+    
+    footer{
+        max-width: 100%;
+        flex-direction: column;
+    }
+
+    .icon{
+        width: 3vw;
+    }
+
+    
+    
+    .ditel {
+        margin-left: 5vw;
+    }
+    
+    footer a, footer p{
+        font-size: 9px;}
+    
+    header{
+        padding: 2.5vh 3.5vw;
+    }
+    
+    #login-seller input, #login-seller label {
+        font-size: 12px;
+    }
+
+    p, a {
+        margin: 0;
+        font-size: 12px;
+    }
+    
+    #welkam{
+        font-size: 30px;}
+    
+    #login-seller input{
+        padding: 1.8vh 3vw;
+    }    
 }
