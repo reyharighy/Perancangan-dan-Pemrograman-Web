@@ -20,10 +20,10 @@
             }
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $is_existed = false;
                 $first_name = $_POST["first_name"];
                 $last_name = $_POST["last_name"];
                 $dob = $_POST["dob"];
-                $email = $_POST["email"];
                 $phone = $_POST["phone"];
                 $address1 = $_POST["address1"];
                 $address2 = $_POST["address2"];
@@ -32,26 +32,40 @@
                 $country = $_POST["country"];
                 $zip = $_POST["zip"];
 
-                $email_duplicate = any_duplicate($conn, "email", $email);
-                $row = $email_duplicate->fetch_assoc();
-
-                if ($email_duplicate->num_rows > 0) {
-                    if ($_SESSION["email"] != $row["email"]) {
-                        $email_error = "Email already registered";
-                    }
-                }
-
-                $phone_duplicate = any_duplicate($conn, "phone", $phone);
+                $phone_duplicate = any_duplicate($conn, "phone", $phone, "user_profile");
                 $row = $phone_duplicate->fetch_assoc();
 
-                if ($phone_duplicate->num_rows > 0) {
-                    if ($phone != $row["phone"]) {
-                        $phone_error = "Phone already registered";
+                if ($phone_duplicate->num_rows > 0 && $_SESSION["user_id"] != $row["user_id"]) {
+                    $phone_error = "Phone already registered";
+                }
+
+                if (!isset($phone_error)) {
+                    if ($_SESSION["is_profile_complete"]) {
+                        $query = "UPDATE user_profile SET first_name=?, last_name=?, dob=?, phone=?, address1=?, address2=?, city=?, 
+                        state=?, country=?, zip=? WHERE user_id = ?;";
+                        $user_entry = $conn->prepare($query);
+                        $user_entry->bind_param(
+                            "ssssssssssi", 
+                            $first_name, $last_name, $dob, $phone, $address1, $address2, $city, 
+                            $state, $country, $zip, $_SESSION["user_id"]
+                        );
+                        $user_entry->execute();
+                        $user_entry->close();
+                    } else {
+                        $query = "INSERT INTO user_profile (user_id, first_name, last_name, dob, phone, address1, address2, city, state,
+                        country, zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $user_entry = $conn->prepare($query);
+                        $user_entry->bind_param(
+                            "issssssssss", 
+                            $_SESSION["user_id"], $first_name, $last_name, $dob, $phone, $address1, $address2, $city, 
+                            $state, $country, $zip
+                        );
+                        $user_entry->execute();
+                        $_SESSION["is_profile_complete"] = true;
+                        $user_entry->close();
                     }
                 }
             }
-
-            $conn->close();
         ?>
 
         <nav class="navbar">
@@ -72,7 +86,7 @@
                 <a href=<?php echo htmlspecialchars($GLOBALS["cart_url"]) ?>>
                     <img src="../icon/cart.svg" alt="Cart">
                 </a>
-                <a href=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>>
+                <a href=<?php echo htmlspecialchars($GLOBALS["profile_url"]) ?>>
                     <img src="../icon/profile.svg" alt="Profile">
                 </a>
                 <label>
@@ -85,41 +99,101 @@
     <section class="section-edit">
         <form id="edit" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?> method="POST">
             <div class="left-side">
+                <?php 
+                    if (!$_SESSION["is_profile_complete"]) {
+                        echo "<h2>Isi dulu data diri kamu ya...</h2>";
+                    }
+
+                    $stmt = $conn->prepare("SELECT * FROM user_profile WHERE user_id = ?");
+                    $stmt->bind_param("i", $_SESSION["user_id"]);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+
+                    if ($result->num_rows > 0) {
+                        $is_existed = true;
+                    }
+                ?>
+                
                 <label>First Name:</label>
-                <input type="text" name="first_name">
+                <input type="text" name="first_name" value=
+                <?php
+                    if ($is_existed) {
+                        echo $row["first_name"];
+                    }
+                    else if (isset($phone_error)) {
+                        echo $first_name;
+                    }
+                ?>>
 
                 <label>Last Name:</label>
-                <input type="text" name="last_name">
+                <input type="text" name="last_name" value=
+                <?php
+                    if ($is_existed) {echo $row["last_name"];}
+                    else if (isset($phone_error)) {echo $last_name;}
+                ?>>
 
                 <label>Date of Birth:</label>
-                <input type="date" name="dob">
-
-                <?php echo isset($email_error) ? "<label style=\"color: red;\">$email_error</label>" : "<label>Email:</label>" ?>
-                <input type="email" name="email" value=<?php echo isset($email_error) ? $row["email"] : $_SESSION["email"]; ?>>
+                <input type="date" name="dob" value=
+                <?php
+                    if ($is_existed) {echo $row["dob"];}
+                    else if (isset($phone_error)) {echo $dob;}
+                ?>>
     
-                <?php echo isset($phone_error) ? "<label style=\"color: red;\">$phone_error</label>" : "<label>Phone Number:</label>" ?>
-                <input type="text" name="phone" value=<?php echo isset($phone_error) ? $row["phone"] : $_SESSION["email"]; ?>>
+                <?php echo isset($phone_error) ? "<label style=\"color: red;\">$phone_error:</label>" : "<label>Phone Number:</label>"; ?>
+                <input type="number" name="phone" value=
+                <?php 
+                    if ($is_existed) {echo $row["phone"];}
+                ?>>
 
                 <label>Address Line 1:</label>
-                <input type="text" name="address1">
+                <input type="text" name="address1" value=
+                <?php 
+                    if ($is_existed) {echo $row["address1"];}
+                    else if (isset($phone_error)) {echo $address1;}
+                ?>>
 
                 <label>Address Line 2:</label>
-                <input type="text" name="address2">
+                <input type="text" name="address2" value=
+                <?php 
+                    if ($is_existed) {echo $row["address2"];}
+                    else if (isset($phone_error)) {echo $address2;}
+                ?>>
 
                 <label>City:</label>
-                <input type="text" name="city">
+                <input type="text" name="city" value=
+                <?php 
+                    if ($is_existed) {echo $row["city"];}
+                    else if (isset($phone_error)) {echo $city;}
+                ?>>
 
                 <label>State:</label>
-                <input type="text" name="state">
+                <input type="text" name="state" value=
+                <?php 
+                    if ($is_existed) {echo $row["state"];}
+                    else if (isset($phone_error)) {echo $state;}
+                ?>>
 
                 <label>Country:</label>
-                <input type="text" name="country">
+                <input type="text" name="country" value=
+                <?php 
+                    if ($is_existed) {echo $row["country"];}
+                    else if (isset($phone_error)) {echo $country;}
+                ?>>
 
                 <label>Postal Code:</label>
-                <input type="text" name="zip">
+                <input type="number" name="zip" value=
+                <?php 
+                    if ($is_existed) {echo $row["zip"];}
+                    else if (isset($phone_error)) {echo $zip;}
+                ?>>
     
                 <input type="submit" id="submit-edit">
             </div>
+            <?php 
+                $stmt->close();
+                $conn->close();
+            ?>
             <div class="right-side">
                 <div><img></div>
                 <button class="change-pp">Change Profile Picture</button>

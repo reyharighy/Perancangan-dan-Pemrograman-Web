@@ -22,7 +22,7 @@
             $email = $_POST["email"];
             $password = $_POST["password"];
 
-            $email_duplicate = any_duplicate($conn, "email", $email);
+            $email_duplicate = any_duplicate($conn, "email", $email,"users");
             
             if ($email_duplicate->num_rows == 0) {
                 $email_error = "Email does not exist";
@@ -31,11 +31,30 @@
                 $stored_hashed_password = $row["password"];
 
                 if (password_verify($password, $stored_hashed_password)) {
+                    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+
                     $_SESSION["user_id"] = $row["user_id"];
                     $_SESSION["username"] = $row["username"];
-                    $_SESSION["email"] = $row["email"];
-                    $_SESSION["created_at"] = $row["created_at"];
-                    $href = htmlspecialchars($GLOBALS["home_page"]);
+                    $stmt->close();
+
+                    $stmt = $conn->prepare("SELECT * FROM user_profile WHERE user_id = ?");
+                    $stmt->bind_param("s", $_SESSION["user_id"]);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+
+                    if ($result->num_rows > 0) {
+                        $href = htmlspecialchars($GLOBALS["home_page"]);
+                        $_SESSION["is_profile_complete"] = true;
+                    } else {
+                        $href = htmlspecialchars($GLOBALS["edit_profile_url"]);
+                        $_SESSION["is_profile_complete"] = false;
+                    }
+
                     header("Location: $href");
                 } else {
                     $password_error = "Password is incorrect";
@@ -106,7 +125,7 @@
                     <tr>
                         <td colspan="3" style="text-align: center;">
                             Don't have an account? 
-                            <a href= <?php echo htmlspecialchars($GLOBALS["home_page"]) ?> style="text-decoration:none;">
+                            <a href= <?php echo htmlspecialchars($GLOBALS["sign_up_url"]) ?> style="text-decoration:none;">
                             <strong style="color: #00ADB5;">Sign Up</strong></a>
                         </td>
                     </tr>

@@ -24,7 +24,7 @@
             $password = $_POST["password"];
             $confirmed_password = $_POST["confirmed_password"];
 
-            $username_duplicate = any_duplicate($conn, "username", $username);
+            $username_duplicate = any_duplicate($conn, "username", $username,"users");
 
             if (empty($username)) {
                 $username_error = "Username is required";
@@ -34,7 +34,7 @@
                 $username_error = "Username already taken";
             }
 
-            $email_duplicate = any_duplicate($conn, "email", $email);
+            $email_duplicate = any_duplicate($conn, "email", $email,"users");
             
             if (empty($email)) {
                 $email_error = "Email is required";
@@ -54,22 +54,12 @@
 
             if (!isset($username_error) && !isset($email_error) && !isset($password_error) && !isset($confirmed_password_error)) {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $conn->query("INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')");
-
-                $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-                $stmt->bind_param("s", $username);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $row = $result->fetch_assoc();
-                $user_id = $row["user_id"];
                 
-                $profile_query = "INSERT INTO user_profile (
-                                    user_id, first_name, last_name, dob, email, phone, address1, address2, city, state, country, zip, updated_at
-                                 ) VALUES (
-                                    $user_id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
-                                 )";
-                
-                $conn->query($profile_query);
+                $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+                $user_entry = $conn->prepare($query);
+                $user_entry->bind_param("sss", $username, $email, $hashed_password);
+                $user_entry->execute();
+                $user_entry->close();
                 
                 $is_saved = true;
             }

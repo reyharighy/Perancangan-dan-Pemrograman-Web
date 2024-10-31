@@ -1,6 +1,6 @@
 <?php
-    function any_duplicate($conn, $column, $variable) {
-        $stmt = $conn->prepare("SELECT * FROM users WHERE $column = ?");
+    function any_duplicate($conn, $column, $variable, $table) {
+        $stmt = $conn->prepare("SELECT * FROM $table WHERE $column = ?");
         $stmt->bind_param("s", $variable);
         $stmt->execute();
 
