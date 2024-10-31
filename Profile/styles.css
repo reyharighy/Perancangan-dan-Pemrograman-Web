@@ -1,3 +1,7 @@
+*{
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -439,4 +443,63 @@ body {
     src: url(../font/Satoshi_Complete/Fonts/OTF/Satoshi-Bold.otf) format('opentype');
     font-weight: normal;
     font-style: normal;
+}
+
+/*Form Edit profile*/
+.section-edit{
+    place-items: center;
+}
+
+#edit{
+    border: 1px solid rgb(202, 202, 202);
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 4vh 4vw;
+    border-radius: 12px;
+}
+
+#edit input{
+    width: 30vw;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.left-side{
+    margin-right: 15vw;
+    display: flex;
+    flex-direction: column;
+    max-width: max-content;
+}
+
+.right-side div{
+    border-radius: 100%;
+    border: 1px solid;
+    width: 15vw;
+    height: 15vw;
+    margin-bottom: 5vh;
+}
+
+.right-side button{
+    width: 100%;
+    padding: 2vh 2vw;
+    background-color: #4c535c;
+    color: white;
+    border-radius: 15px;
+    border: none;
+}
+
+#submit-edit{
+    cursor: pointer;
+    background-color: #222831;
+    color: white;
+}
+
+#submit-edit:hover{
+    background-color: #00C0C7;
 }
