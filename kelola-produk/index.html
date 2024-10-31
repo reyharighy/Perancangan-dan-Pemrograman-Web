@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <link href="https://db.onlinewebfonts.com/c/f1fcc5aed1e20fc0cdb9f8a7573625bd?family=Integral+CF+Regular" rel="stylesheet">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="sidenav">
@@ -26,7 +25,7 @@
     <section>
         <div class="isi" id="header">
             <form id="search-bar">
-                <img width="20" height="20" src="img/search.png"/>
+                <img width="20" height="20" src="../dashboard-seller/img/search.png"/>
                 <input type="search" placeholder="Search" id="search">
             </form>
             <div>
@@ -41,65 +40,23 @@
 
         <div id="garis"></div>
 
-        <div class="isi" id="main">
-            <h1>Dashboard</h1>
-            <table class="data">
-                <tr>
-                    <td>
-                        <div class="cards" id="total-revenue">
-                            <h4>Total Revenue</h4>
-                            <h2 class="num">4</h2>
-                            <p>vs last week</p>
-                        </div>
-                    </td>
+        <div class="main">
+            <div class="add-product">
+                <div id="add-product-pict">
+                    <img>
+                </div>
 
-                    <td>
-                        <div class="cards" id="total-income">
-                            <h4>Total Income</h4>
-                            <h2 class="num">4</h2>
-                            <p>vs last week</p>
-                        </div>
-
-                    </td>
-                    <td>
-                        <div class="cards" id="order">
-                            <h4>Order</h4>
-                            <h2 class="num">4</h2>
-                            <p>vs last week</p>
-                        </div>
-
-                    </td>
-                    <td id="pojok-kanan">
-                        <div class="cards" id="products-sold">
-                            <h4>Product Sold</h4>
-                            <h2 class="num">4</h2>
-                            <p>vs last week</p>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-            <div class="cards" id="statistics">
-                <div class="top">
-                    <h3>Statistics</h3>
-                    <div id="top-right">
-                        <div class="indikator">
-                            <div class="kotak-warna" style="background-color: #222831;"></div>
-                            <p>Revenue</p>
-                        </div>
-                        <div class="indikator">
-                            <div class="kotak-warna" style="background-color: #5D6776;"></div>
-                            <p>Income</p>
-                        </div>
-                        <button>This Month</button>
-                    </div>
+                <div>
+                    <form>
+                        <label></label>
+                        <input type="text">
+                    </form>
                 </div>
             </div>
 
             <div class="cards" id="recent-transaction">
                 <div class="top">
                     <h3>Recent Transactions</h3>
-                    <button>Filter and Sort<img width="15vw" src="img/filter.png"></button>
                 </div>
                 <table id="latest-transaction">
                     <tr>
@@ -133,7 +90,7 @@
                 </table>
             </div>
         </div>
-
+        </div>
         <div class="footer">
             <footer>
                     <div class="banner">
@@ -209,5 +166,7 @@
             </footer>
         </div>
     </section>
+
+    
 </body>
 </html>
