@@ -470,8 +470,8 @@ body {
     border-radius: 10px;
 }
 
-.left-side{
-    margin-right: 15vw;
+.left-side {
+    margin-right: 5vw;
     display: flex;
     flex-direction: column;
     max-width: max-content;

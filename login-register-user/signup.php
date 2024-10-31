@@ -8,9 +8,10 @@
 </head>
 <body>
     <?php
-        include("funtionality.php");
+        include "../functionality/functionality.php";
+        include "../functionality/const.php";
 
-        $is_success = false;
+        $is_saved = false;
         $conn = new mysqli("localhost", "root","","ecommerce_db");
 
         if ($conn->connect_error) {
@@ -34,7 +35,6 @@
             }
 
             $email_duplicate = any_duplicate($conn, "email", $email);
-
             
             if (empty($email)) {
                 $email_error = "Email is required";
@@ -55,7 +55,23 @@
             if (!isset($username_error) && !isset($email_error) && !isset($password_error) && !isset($confirmed_password_error)) {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $conn->query("INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')");
-                $is_success = true;
+
+                $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
+                $user_id = $row["user_id"];
+                
+                $profile_query = "INSERT INTO user_profile (
+                                    user_id, first_name, last_name, dob, email, phone, address1, address2, city, state, country, zip, updated_at
+                                 ) VALUES (
+                                    $user_id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+                                 )";
+                
+                $conn->query($profile_query);
+                
+                $is_saved = true;
             }
         }
 
@@ -101,7 +117,7 @@
                         }
 
                         if (isset($username)) {
-                            dynamic_element("Username", $username, $is_success);
+                            dynamic_element("Username", $username, $is_saved);
                         } else {
                             echo "<tr><td colspan=\"3\"><input type=\"text\" name=\"username\" placeholder=\"username\"></td></tr>";
                         }
@@ -113,7 +129,7 @@
                         }
 
                         if (isset($email)) {
-                            dynamic_element("Email", $email, $is_success);
+                            dynamic_element("Email", $email, $is_saved);
                         } else {
                             echo "<tr><td colspan=\"3\"><input type=\"email\" name=\"email\" placeholder=\"email\"></td></tr>";
                         }
@@ -163,7 +179,7 @@
                                  </tr>";
                         }
                     
-                        if ($is_success) {
+                        if ($is_saved) {
                             echo "<tr><td colspan=\"3\" style=\"color: green;\">Registration Successful</td></tr>";
                         }
                     ?>
@@ -177,7 +193,7 @@
                     <tr>
                         <td colspan="3" style="text-align: center;">
                             Already have an account? 
-                            <a href="http://localhost/ppw_project/login-register-user/login.php" style="text-decoration: none;">
+                            <a href= <?php echo htmlspecialchars($GLOBALS["sign_in_url"]) ?> style="text-decoration:none;">
                             <strong style="color: #00ADB5;">Sign In</strong></a>
                         </td>
                     </tr>

@@ -9,9 +9,12 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="top-bar">
-            <p>Sign up and get 20% off your first order. <a href="#">Sign Up Now</a></p>
-        </div>
+        <?php
+            include "../../functionality/const.php";
+            
+            session_start();
+        ?>
+
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
@@ -27,24 +30,31 @@
                 <input type="text" placeholder="Search for products...">
             </div>
             <div class="cart-profile">
-                <a href="#">
+                <a href=<?php echo htmlspecialchars($GLOBALS["cart_url"]);?>>
                     <img src="../icon/cart.svg" alt="Cart">
                 </a>
-                <a href="#">
+                <a href=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>>
                     <img src="../icon/profile.svg" alt="Profile">
                 </a>
+                <label>
+                    <?php echo "<strong style=\"color: #00ADB5;\">" . $_SESSION["username"] . "</strong>";?>
+                </label>
             </div>     
         </nav>
     </header>
     <div class="container">
+        
         <!-- User Profile Section -->
         <div class="profile-section">
             <div class="profile-header">
                 <img src="../pict/99129445_p0.jpg" alt="User Profile Picture" class="profile-pic">
                 <div class="profile-info">
-                    <h2 class="username">Username</h2>
-                    <p class="user-status">Member since January 2023</p>
-                    <button class="edit-profile">Edit Profile</button>
+                    <h2 class="username"><?php echo $_SESSION["username"]?></h2>
+                    <?php
+                        $date = new DateTime($_SESSION["created_at"]);
+                        echo "<p class=\"user-status\">Member since " . $date->format("F Y") . "</p>";
+                    ?>
+                    <a href="edit.php"><button class="edit-profile">Edit Profile</button></a>
                 </div>
             </div>
         </div>
@@ -59,7 +69,7 @@
 
         <!-- Orders Section -->
         <div id="orders" class="tab-content active">
-            <h3>Your Orders</h3>
+            <h3>Current Orders</h3>
             <div class="order-item">
                 <img src="../pict/110666530_p0.jpg" alt="Product Image">
                 <div class="order-details">

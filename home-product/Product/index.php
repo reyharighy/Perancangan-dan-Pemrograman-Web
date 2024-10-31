@@ -10,32 +10,43 @@
 
    <!-- Header -->
    <header>
-    <div class="top-bar">
-        <p>Sign up and get 20% off your first order. <a href="#">Sign Up Now</a></p>
-    </div>
-    <nav class="navbar">
-        <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
-        <ul class="nav-links">
-            <li><a href="#">Shop</a></li>
-            <li><a href="#">Top Sales</a></li>
-            <li><a href="#">Offers</a></li>
-            <li><a href="#">Seller</a></li>
-        </ul>
-        <div class="search-container">
-            <button>
-                <a href="#"><img src="../icon/search.svg"></a>
-            </button>
-            <input type="text" placeholder="Search for products...">
-        </div>
-        <div class="cart-profile">
-            <a href="#">
-                <img src="../icon/cart.svg" alt="Cart">
-            </a>
-            <a href="#">
-                <img src="../icon/profile.svg" alt="Profile">
-            </a>
-        </div>     
-    </nav>
+        <?php
+            include "../../functionality/functionality.php";
+            session_start();
+            is_logged_in();
+        ?>
+    
+        <nav class="navbar">
+            <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
+            <ul class="nav-links">
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Top Sales</a></li>
+                <li><a href="#">Offers</a></li>
+                <li><a href="#">Seller</a></li>
+            </ul>
+            <div class="search-container">
+                <button>
+                    <a href="#"><img src="../icon/search.svg"></a>
+                </button>
+                <input type="text" placeholder="Search for products...">
+            </div>
+            <div class="cart-profile">
+                <a href="#">
+                    <img src="../icon/cart.svg" alt="Cart">
+                </a>
+                <a href="#">
+                    <img src="../icon/profile.svg" alt="Profile">
+                </a>
+                <label>
+                    <?php
+                        $text_login = "<strong style=\"color: #00ADB5;\">Sign In</strong>";
+                        $login = "<a href=\"http://localhost/project/Perancangan-dan-Pemrograman-Web/login-register-user/login.php\"
+                                style=\"text-decoration: none\">$text_login</a>";
+                        echo isset($_SESSION["username"]) ? "<strong style=\"color: #00ADB5;\">" . $_SESSION["username"] . "</strong>" : $login;
+                    ?>
+                </label>
+            </div>     
+        </nav>
     <hr id="hr1">
 </header>
 

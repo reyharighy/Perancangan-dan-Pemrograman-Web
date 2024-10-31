@@ -8,7 +8,8 @@
 </head>
 <body>
     <?php
-        include("funtionality.php");
+        include "../functionality/functionality.php";
+        include "../functionality/const.php";
 
         session_start();
         $conn = new mysqli("localhost","root","","ecommerce_db");
@@ -33,7 +34,9 @@
                     $_SESSION["user_id"] = $row["user_id"];
                     $_SESSION["username"] = $row["username"];
                     $_SESSION["email"] = $row["email"];
-                    header("Location: http://localhost/ppw_project/home-product/Homepage/index.php?");
+                    $_SESSION["created_at"] = $row["created_at"];
+                    $href = htmlspecialchars($GLOBALS["home_page"]);
+                    header("Location: $href");
                 } else {
                     $password_error = "Password is incorrect";
                 }
@@ -48,7 +51,7 @@
         <div>
             <h1>Welcome Back!</h1>
             <p>Please enter your contact detail to connect</p>
-            <form id="regisform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+            <form id="regisform" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?> method="POST">
                 <table>
                     <tr>
                         <td colspan="3">
@@ -103,7 +106,7 @@
                     <tr>
                         <td colspan="3" style="text-align: center;">
                             Don't have an account? 
-                            <a href="http://localhost/ppw_project/login-register-user/signup.php" style="text-decoration:none;">
+                            <a href= <?php echo htmlspecialchars($GLOBALS["home_page"]) ?> style="text-decoration:none;">
                             <strong style="color: #00ADB5;">Sign Up</strong></a>
                         </td>
                     </tr>
