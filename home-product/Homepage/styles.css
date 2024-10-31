@@ -291,6 +291,31 @@ hr {
     cursor: pointer;
 }
 
+/* Profile Section */
+.profile-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profile-form input[type="email"] {
+    padding: 10px 10px 10px 20px;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    width: 300px;
+    max-width: 100%;
+}
+
+.profile-form button {
+    padding: 10px 30px;
+    background-color: #ffffff;
+    color: #000;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
 /* Footer Section */
 .footer {
     font-family: "Satoshi-Regular";

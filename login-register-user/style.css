@@ -95,3 +95,7 @@ td{
     margin-top: 3vh;
     padding: 2vh 0.5vw;
 }
+
+#submit:hover, #google:hover{
+    cursor: pointer;
+}

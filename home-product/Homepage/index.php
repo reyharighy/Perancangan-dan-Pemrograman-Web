@@ -9,9 +9,17 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="top-bar">
-            <p>Sign up and get 20% off your first order. <a href="#">Sign Up Now</a></p>
-        </div>
+        <?php
+            session_start();
+            
+            if (!isset($_SESSION["user_id"])) {
+                echo "<div class=\"top-bar\">
+                        <p>Sign up and get 20% off your first order. 
+                        <a href=\"http://localhost/ppw_project/login-register-user/signup.php\">Sign Up Now</a></p>
+                     </div>";
+            }
+        ?>
+
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
@@ -33,6 +41,14 @@
                 <a href="#">
                     <img src="../icon/profile.svg" alt="Profile">
                 </a>
+                <label>
+                    <?php
+                        $text_login = "<strong style=\"color: #00ADB5;\">Sign In</strong>";
+                        $login = "<a href=\"http://localhost/ppw_project/login-register-user/login.php\"
+                                 style=\"text-decoration: none\">$text_login</a>";
+                        echo isset($_SESSION["username"]) ? "<strong style=\"color: #00ADB5;\">Welcome, " . $_SESSION["username"] . "</strong>" : $login;
+                    ?>
+                </label>
             </div>     
         </nav>
     </header>
@@ -268,5 +284,6 @@
             <p>Shop.co © 2000-2023, All Rights Reserved</p>
         </div>
     </footer>
+    <?php session_abort(); ?>
 </body>
 </html>
