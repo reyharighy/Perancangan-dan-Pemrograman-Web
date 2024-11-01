@@ -1,3 +1,5 @@
+<?php include 'db_conn.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,14 +17,20 @@
 
             session_start();
             promotion_header();
+
+            $conn = new mysqli("localhost", "root","","ecommerce_db");
+
+            if ($conn->connect_error) {
+                die("Connection failed: ". $conn->connect_error);
+            }
         ?>
 
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
-                <li><a href=<?php echo htmlspecialchars($GLOBALS["home_page"]); ?>>Shop</a></li>
-                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#top-sales")); ?>>Top Sales</a></li>
-                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#offers")); ?>>Offers</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Top Sales</a></li>
+                <li><a href="#">Offers</a></li>
                 <li><a href="#">Seller</a></li>
             </ul>
             <div class="search-container">
@@ -79,6 +87,57 @@
     <section class="offers">
         <h2>Offers</h2>
         <div class="products">
+<<<<<<< HEAD
+            <?php
+                $n_offer = isset($_GET['n_offer']) ? $_GET['n_offer'] : 3;
+                $query = "SELECT COUNT(*) FROM products;";
+                $stmt_count = $conn->prepare($query);
+                $stmt_count->execute();
+                $result = $stmt_count->get_result();
+                $row = $result->fetch_assoc();
+                $row_count = $row["COUNT(*)"];
+                
+                $query = "SELECT * FROM products;";
+                $stmt_loop = $conn->prepare($query);
+                $stmt_loop->execute();
+                $result = $stmt_loop->get_result();
+                
+                for ($x = 1; $x <= $n_offer; $x++) {
+                    if ($row = $result->fetch_assoc()) {
+                        $name = $row["product_name"];
+                        $rating = $row["rating"];
+                        $price1 = $row["price"];
+                        $discount = $row["discount"];
+                        $cut = ($price1 * $discount) / 100;
+                        $price2 = $price1 - $cut;
+
+                        echo "<div class=\"product-card\">
+                                <a href=\"#\">
+                                    <img src=\"../pict/$x.jpg\" alt=\"Product\"><br>
+                                </a>
+                                <div class=\"product-card-details\">
+                                    <a href=\"#\">$name</a>
+                                    <div class=\"rating\">
+                                        ★★★★☆ <span id=\"rating\"> $rating/5 </span>
+                                    </div>
+                                    <p class=\"price\">$price2<span id=\"price2\">$price1</span><span id=\"discount\">$discount %</span></p>
+                                </div>
+                             </div>";
+                    }
+                }
+            ?>
+        </div>
+            
+        <?php
+            if ($row_count > $n_offer) {
+                $url = $_SERVER["PHP_SELF"] . "?n_offer=" . $row_count . "#offers";
+                echo "<a href=\"$url\" class=\"view-all\">View All</a>";
+            }
+
+            $stmt_loop->close();
+        ?>
+        <hr>
+=======
 
         <?php
         // Mengambil data produk dari database
@@ -107,6 +166,7 @@
         }
         ?>
         </div>
+>>>>>>> a79f9669f6cc4bd56ab4443480c365db2637917c
     </section>
     <a href="#" class="view-all">View All</a>
     <hr>
@@ -115,6 +175,46 @@
     <section class="top-sales">
         <h2>Top Sales</h2>
         <div class="products">
+<<<<<<< HEAD
+            <?php
+                $n_best = isset($_GET['n_best']) ? $_GET['n_best'] : 3;
+                $query = "SELECT * FROM products ORDER BY sold DESC;";
+                $stmt_loop = $conn->prepare($query);
+                $stmt_loop->execute();
+                $result = $stmt_loop->get_result();
+
+                for ($x = 1; $x <= $n_best; $x++) {
+                    if ($row = $result->fetch_assoc()) {
+                        $qty = $row["qty"];
+                        $sold = $row["sold"];
+                        $left = $qty - $sold;
+
+                        echo "<div class=\"product-card\">
+                                <a href=\"#\">
+                                    <img src=\"../pict/$x.jpg\" alt=\"Product\"><br>
+                                </a>
+                                <div class=\"product-card-details\">
+                                    <a href=\"#\">$name</a>
+                                    <div class=\"rating\">
+                                        ★★★★☆ <span id=\"rating\"> $rating/5 </span>
+                                    </div>
+                                    <p class=\"price\">$left items left.</p>
+                                </div>
+                             </div>";
+                    }
+                }
+            ?>
+        </div>
+            <?php
+            if ($row_count > $n_best) {
+                $url = $_SERVER["PHP_SELF"] . "?n_best=" . $row_count . "#top-sales";
+                echo "<a href=\"$url\" class=\"view-all\">View All</a>";
+            }
+            
+            $stmt_count->close();
+            $stmt_loop->close();
+            ?>
+=======
         <?php
         // Mengambil data produk dari database
         $sql = "SELECT * FROM products ORDER BY id DESC";
@@ -141,6 +241,7 @@
             echo "Tidak ada produk.";
         }
         ?>
+>>>>>>> a79f9669f6cc4bd56ab4443480c365db2637917c
     </section>
     <a href="#" class="view-all">View All</a>
 

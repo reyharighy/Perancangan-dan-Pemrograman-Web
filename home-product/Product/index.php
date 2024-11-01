@@ -1,3 +1,16 @@
+<?php include '../Homepage/db_conn.php';
+// Mengambil ID produk dari parameter URL
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Mengambil data produk berdasarkan ID
+$sql = "SELECT * FROM products WHERE id = $product_id";
+$result = $conn->query($sql);
+
+// Memeriksa apakah produk ditemukan
+if ($result->num_rows > 0) {
+    $product = $result->fetch_assoc();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,32 +75,23 @@
         <div class="product-images-table">
             <table>
                 <tr>
-                    <td><img src="../pict/99129445_p0.jpg" alt="Product Image 1" class="thumbnail-image"></td>
-                    <td rowspan="3" class="main-image-cell">
-                        <img src="../pict/110666530_p0.jpg" alt="Main Product Image" class="main-image">
+                    <td class="main-image-cell">
+                        <img src="../../kelola-produk/upload/<?php echo $product['image']; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="main-image">
                     </td>
-                </tr>
-                <tr>
-                    <td><img src="../pict/99129445_p0.jpg" alt="Product Image 2" class="thumbnail-image"></td>
-                </tr>
-                <tr>
-                    <td><img src="../pict/99129445_p0.jpg" alt="Product Image 3" class="thumbnail-image"></td>
                 </tr>
             </table>
         </div>
         <div class="product-info">
-            <h2 class="product-title">ONE LIFE GRAPHIC T-SHIRT</h2>
+            <h2 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h2>
             <div class="product-rating">
                 <span>★★★★☆</span>
                 <span id="rating">4.5/5</span>
             </div>
             <div class="product-price">
-                <span>$260</span>
-                <span class="original-price">$300</span>
-                <span class="discount">-40%</span>
+                $<?php echo htmlspecialchars($product['price']); ?>
             </div>
             <p class="product-description">
-                This graphic t-shirt, perfect for any occasion, is crafted from soft and breathable fabric that offers superior comfort and style.
+                <?php echo htmlspecialchars($product['description']); ?>
             </p>
             <hr>
 
@@ -307,3 +311,9 @@
     </footer>
 </body>
 </html>
+
+<?php
+} else {
+    // Jika produk tidak ditemukan
+    echo "<h1>Produk tidak ditemukan.</h1>";
+}
