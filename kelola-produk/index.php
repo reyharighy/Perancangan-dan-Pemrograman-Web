@@ -1,3 +1,5 @@
+<?php include "db_conn.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://db.onlinewebfonts.com/c/f1fcc5aed1e20fc0cdb9f8a7573625bd?family=Integral+CF+Regular" rel="stylesheet">
 </head>
-<body>
+<body> 
     <nav class="sidenav">
         <div id="logo" style="color: white;">SHOP<span style="color: #00ADB5;">.CO</span></div>
         <div class="menu">
@@ -46,44 +48,52 @@
             <div class="add-product">
                 <h3>Add Product</h3>
                 
-
                 <div>
-                    <form>
+                    <?php if(isset($_GET['error'])): ?>
+                        <p><?php echo $_GET['error']; ?></p>
+                    <?php endif ?>   
+                    <form action="upload.php" method="POST" enctype="multipart/form-data">
                         <div id="left-side">
-                            <img width="20px" src="img.png">
+                            <label for="image">Product Image</label>
+                            <input type="file" id="image" name="image" required><br><br>
                         </div>
                         <div class="right-side">
                             <div class="input-new-product">
                             <table>
                                 <tr>
-                                    <td><label>Product Name</label><br>
-                                        <input type="text" placeholder="Enter product name">
+                                    <td><label for="name">Product Name</label><br>
+                                        <input type="text" id="name" name="name" placeholder="Enter product name" required>
                                 </tr>
                                 <tr>
-                                    <td><label>Price</label><br>
-                                        <input type="text" placeholder="Enter product price">
+                                    <td><label for="price">Price</label><br>
+                                        <input type="number" id="price" name="price" placeholder="Enter product price"  pattern="^(0|[1-9]\d*)" required>
                                 </tr>
                             </table>
                             <table>
                                 <tr>
                                     <td>
-                                        <label>Category</label><br>
-                                        <input type="text" placeholder="Enter product category">
+                                        <label for="category">Category</label><br>
+                                        <select id="category" name="category">
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Makeup">Makeup</option>
+                                        <option value="Gaming Accesories">Gaming Accesories</option>
+                                        <option value="Kitchen Appliances">Kitchen Appliances</option>
+                                        <option value="Clothes">Clothes</option>
+                                        <option value="Books">Books</option>
+                                        <option value="Toys">Toys</option>
+                                    </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Product Description</label><br>
-                                        <input type="text" placeholder="Enter product description">
+                                        <label for="description">Product Description</label><br>
+                                        <input type="text" id="description" name="description" placeholder="Enter product description">
                                     </td>
                                 </tr>
                             </table>
-                            
                         </div>
-                        <input type="button" name="submit" value="Submit" id="submit-add">
+                        <input type="submit" name="submit" value="Add Product" id="submit-add">
                         </div>
-                        
-                        
                     </form>
                 </div>
             </div>
@@ -98,24 +108,29 @@
                         <th>Category</th>
                         <th>Price</th>
                         <th>Description</th>
+                        <th>Action</th>
                     </tr>
                     <tr>
-                        <td>Product 1</td>
-                        <td>Category 1</td>
-                        <td>Price 1</td>
-                        <td>Description 1</td>
-                    </tr>
-                    <tr>
-                        <td>Product 1</td>
-                        <td>Category 1</td>
-                        <td>Price 1</td>
-                        <td>Description 1</td>
-                    </tr>
-                    <tr>
-                        <td>Product 1</td>
-                        <td>Category 1</td>
-                        <td>Price 1</td>
-                        <td>Description 1</td>
+                    <?php
+                    // Mengambil data produk dari database
+                    $sql = "SELECT * FROM products ORDER BY id DESC";
+                    $result = mysqli_query($conn, $sql);
+
+                    if (mysqli_num_rows($result) > 0) {
+                        // Menampilkan data produk ke dalam tabel
+                        while ($product = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td>{$product['name']}</td>";
+                            echo "<td>{$product['category']}</td>";
+                            echo "<td>{$product['price']}</td>";
+                            echo "<td>{$product['description']}</td>";
+                            echo "<td><a href='delete_product.php?id={$product['id']}' onclick='return confirm(\"Are you sure you want to delete this product?\")'>Delete</a></td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>No products found</td></tr>";
+                    }
+                    ?>
                     </tr>
                 </table>
             </div>
@@ -196,7 +211,5 @@
             </footer>
         </div>
     </section>
-
-    
 </body>
 </html>
