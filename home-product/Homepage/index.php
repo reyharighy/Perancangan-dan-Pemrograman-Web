@@ -15,6 +15,12 @@
 
             session_start();
             promotion_header();
+
+            $conn = new mysqli("localhost", "root","","ecommerce_db");
+
+            if ($conn->connect_error) {
+                die("Connection failed: ". $conn->connect_error);
+            }
         ?>
 
         <nav class="navbar">
@@ -79,59 +85,54 @@
     <section class="offers" id="offers">
         <h2>Offers</h2>
         <div class="products">
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+            <?php
+                $n_offer = isset($_GET['n_offer']) ? $_GET['n_offer'] : 3;
+                $query = "SELECT COUNT(*) FROM products;";
+                $stmt_count = $conn->prepare($query);
+                $stmt_count->execute();
+                $result = $stmt_count->get_result();
+                $row = $result->fetch_assoc();
+                $row_count = $row["COUNT(*)"];
+                
+                $query = "SELECT * FROM products;";
+                $stmt_loop = $conn->prepare($query);
+                $stmt_loop->execute();
+                $result = $stmt_loop->get_result();
+                
+                for ($x = 1; $x <= $n_offer; $x++) {
+                    if ($row = $result->fetch_assoc()) {
+                        $name = $row["product_name"];
+                        $rating = $row["rating"];
+                        $price1 = $row["price"];
+                        $discount = $row["discount"];
+                        $cut = ($price1 * $discount) / 100;
+                        $price2 = $price1 - $cut;
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+                        echo "<div class=\"product-card\">
+                                <a href=\"#\">
+                                    <img src=\"../pict/$x.jpg\" alt=\"Product\"><br>
+                                </a>
+                                <div class=\"product-card-details\">
+                                    <a href=\"#\">$name</a>
+                                    <div class=\"rating\">
+                                        ★★★★☆ <span id=\"rating\"> $rating/5 </span>
+                                    </div>
+                                    <p class=\"price\">$price2<span id=\"price2\">$price1</span><span id=\"discount\">$discount %</span></p>
+                                </div>
+                             </div>";
+                    }
+                }
+            ?>
         </div>
-        <a href="#" class="view-all">View All</a>
+            
+        <?php
+            if ($row_count > $n_offer) {
+                $url = $_SERVER["PHP_SELF"] . "?n_offer=" . $row_count . "#offers";
+                echo "<a href=\"$url\" class=\"view-all\">View All</a>";
+            }
+
+            $stmt_loop->close();
+        ?>
         <hr>
     </section>
 
@@ -140,59 +141,44 @@
     <section class="top-sales" id="top-sales">
         <h2>Top Sales</h2>
         <div class="products">
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+            <?php
+                $n_best = isset($_GET['n_best']) ? $_GET['n_best'] : 3;
+                $query = "SELECT * FROM products ORDER BY sold DESC;";
+                $stmt_loop = $conn->prepare($query);
+                $stmt_loop->execute();
+                $result = $stmt_loop->get_result();
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+                for ($x = 1; $x <= $n_best; $x++) {
+                    if ($row = $result->fetch_assoc()) {
+                        $qty = $row["qty"];
+                        $sold = $row["sold"];
+                        $left = $qty - $sold;
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+                        echo "<div class=\"product-card\">
+                                <a href=\"#\">
+                                    <img src=\"../pict/$x.jpg\" alt=\"Product\"><br>
+                                </a>
+                                <div class=\"product-card-details\">
+                                    <a href=\"#\">$name</a>
+                                    <div class=\"rating\">
+                                        ★★★★☆ <span id=\"rating\"> $rating/5 </span>
+                                    </div>
+                                    <p class=\"price\">$left items left.</p>
+                                </div>
+                             </div>";
+                    }
+                }
+            ?>
         </div>
-        <a href="#" class="view-all">View All</a>
+            <?php
+            if ($row_count > $n_best) {
+                $url = $_SERVER["PHP_SELF"] . "?n_best=" . $row_count . "#top-sales";
+                echo "<a href=\"$url\" class=\"view-all\">View All</a>";
+            }
+            
+            $stmt_count->close();
+            $stmt_loop->close();
+            ?>
     </section>
 
       <!-- Category Section -->
