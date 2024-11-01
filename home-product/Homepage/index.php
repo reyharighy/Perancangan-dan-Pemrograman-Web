@@ -20,9 +20,9 @@
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Top Sales</a></li>
-                <li><a href="#">Offers</a></li>
+                <li><a href=<?php echo htmlspecialchars($GLOBALS["home_page"]); ?>>Shop</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#top-sales")); ?>>Top Sales</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#offers")); ?>>Offers</a></li>
                 <li><a href="#">Seller</a></li>
             </ul>
             <div class="search-container">
@@ -76,7 +76,7 @@
     <div id="blank"></div>
 
     <!-- Offers Section -->
-    <section class="offers">
+    <section class="offers" id="offers">
         <h2>Offers</h2>
         <div class="products">
             <div class="product-card">
@@ -137,7 +137,7 @@
 
 
     <!-- Top Sales Section -->
-    <section class="top-sales">
+    <section class="top-sales" id="top-sales">
         <h2>Top Sales</h2>
         <div class="products">
             <div class="product-card">

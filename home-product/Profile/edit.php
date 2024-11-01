@@ -13,6 +13,7 @@
             include "../../functionality/const.php";
 
             session_start();
+            $is_existed = false;
             $conn = new mysqli("localhost", "root","","ecommerce_db");
 
             if ($conn->connect_error) {
@@ -20,7 +21,6 @@
             }
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $is_existed = false;
                 $first_name = $_POST["first_name"];
                 $last_name = $_POST["last_name"];
                 $dob = $_POST["dob"];
@@ -49,6 +49,7 @@
                             $first_name, $last_name, $dob, $phone, $address1, $address2, $city, 
                             $state, $country, $zip, $_SESSION["user_id"]
                         );
+
                         $user_entry->execute();
                         $user_entry->close();
                     } else {
@@ -60,9 +61,12 @@
                             $_SESSION["user_id"], $first_name, $last_name, $dob, $phone, $address1, $address2, $city, 
                             $state, $country, $zip
                         );
+                        
                         $user_entry->execute();
-                        $_SESSION["is_profile_complete"] = true;
                         $user_entry->close();
+                        $_SESSION["is_profile_complete"] = true;
+                        $href = $GLOBALS["home_page"];
+                        header("Location: ". $href ."");
                     }
                 }
             }
@@ -71,9 +75,9 @@
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Top Sales</a></li>
-                <li><a href="#">Offers</a></li>
+                <li><a href=<?php echo htmlspecialchars($GLOBALS["home_page"]); ?>>Shop</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#top-sales")); ?>>Top Sales</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#offers")); ?>>Offers</a></li>
                 <li><a href="#">Seller</a></li>
             </ul>
             <div class="search-container">
@@ -116,77 +120,100 @@
                 ?>
                 
                 <label>First Name:</label>
-                <input type="text" name="first_name" value=
                 <?php
                     if ($is_existed) {
-                        echo $row["first_name"];
+                        $the_name = $row["first_name"];
+                        echo "<input type=\"text\" name=\"first_name\" value=\"$the_name\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"first_name\">";
                     }
-                    else if (isset($phone_error)) {
-                        echo $first_name;
-                    }
-                ?>>
-
+                ?>
+                
                 <label>Last Name:</label>
-                <input type="text" name="last_name" value=
                 <?php
-                    if ($is_existed) {echo $row["last_name"];}
-                    else if (isset($phone_error)) {echo $last_name;}
-                ?>>
+                    if ($is_existed) {
+                        $the_value = $row["last_name"];
+                        echo "<input type=\"text\" name=\"last_name\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"last_name\">";
+                    }
+                ?>
 
                 <label>Date of Birth:</label>
-                <input type="date" name="dob" value=
                 <?php
-                    if ($is_existed) {echo $row["dob"];}
-                    else if (isset($phone_error)) {echo $dob;}
-                ?>>
+                    if ($is_existed) {
+                        $the_value = $row["dob"];
+                        echo "<input type=\"date\" name=\"dob\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"date\" name=\"dob\" value=\">";
+                    }
+                ?>
     
-                <?php echo isset($phone_error) ? "<label style=\"color: red;\">$phone_error:</label>" : "<label>Phone Number:</label>"; ?>
-                <input type="number" name="phone" value=
-                <?php 
-                    if ($is_existed) {echo $row["phone"];}
-                ?>>
+                <?php
+                    $the_value = $row["phone"];
+                    echo isset($phone_error) ? "<label style=\"color: red;\">$phone_error:</label>" : "<label>Phone Number:</label>";
+                    echo isset($phone_error) ? "<input type=\"text\" name=\"phone\">" : "<input type=\"text\" name=\"phone\" value=\"$the_value\">";
+                ?>
 
                 <label>Address Line 1:</label>
-                <input type="text" name="address1" value=
-                <?php 
-                    if ($is_existed) {echo $row["address1"];}
-                    else if (isset($phone_error)) {echo $address1;}
-                ?>>
+                <?php
+                    if ($is_existed) {
+                        $the_value = $row["address1"];
+                        echo "<input type=\"text\" name=\"address1\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"address1\">";
+                    }
+                ?>
 
                 <label>Address Line 2:</label>
-                <input type="text" name="address2" value=
-                <?php 
-                    if ($is_existed) {echo $row["address2"];}
-                    else if (isset($phone_error)) {echo $address2;}
-                ?>>
+                <?php
+                    if ($is_existed) {
+                        $the_value = $row["address2"];
+                        echo "<input type=\"text\" name=\"address2\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"address2\">";
+                    }
+                ?>
 
                 <label>City:</label>
-                <input type="text" name="city" value=
-                <?php 
-                    if ($is_existed) {echo $row["city"];}
-                    else if (isset($phone_error)) {echo $city;}
-                ?>>
+                <?php
+                    if ($is_existed) {
+                        $the_value = $row["city"];
+                        echo "<input type=\"text\" name=\"city\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"city\">";
+                    }
+                ?>
 
                 <label>State:</label>
-                <input type="text" name="state" value=
-                <?php 
-                    if ($is_existed) {echo $row["state"];}
-                    else if (isset($phone_error)) {echo $state;}
-                ?>>
+                <?php
+                    if ($is_existed) {
+                        $the_value = $row["state"];
+                        echo "<input type=\"text\" name=\"state\" value=\"$the_value\">";
+                    } else {
+                        echo "<input type=\"text\" name=\"state\">";
+                    }
+                ?>
 
                 <label>Country:</label>
-                <input type="text" name="country" value=
-                <?php 
-                    if ($is_existed) {echo $row["country"];}
-                    else if (isset($phone_error)) {echo $country;}
-                ?>>
+                <?php
+                if ($is_existed) {
+                    $the_value = $row["country"];
+                    echo "<input type=\"text\" name=\"country\" value=\"$the_value\">";
+                } else {
+                    echo "<input type=\"text\" name=\"country\">";
+                }
+                ?>
 
                 <label>Postal Code:</label>
-                <input type="number" name="zip" value=
-                <?php 
-                    if ($is_existed) {echo $row["zip"];}
-                    else if (isset($phone_error)) {echo $zip;}
-                ?>>
+                <?php
+                if ($is_existed) {
+                    $the_value = $row["zip"];
+                    echo "<input type=\"text\" name=\"zip\" value=\"$the_value\">";
+                } else {
+                    echo "<input type=\"text\" name=\"zip\">";
+                }
+                ?>
     
                 <input type="submit" id="submit-edit">
             </div>

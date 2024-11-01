@@ -18,9 +18,9 @@
         <nav class="navbar">
             <div class="logo">SHOP<span style="color: #00adb5;">.CO</span></div>
             <ul class="nav-links">
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Top Sales</a></li>
-                <li><a href="#">Offers</a></li>
+                <li><a href=<?php echo htmlspecialchars($GLOBALS["home_page"]); ?>>Shop</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#top-sales")); ?>>Top Sales</a></li>
+                <li><a href=<?php echo htmlspecialchars(($GLOBALS["home_page"] . "#offers")); ?>>Offers</a></li>
                 <li><a href="#">Seller</a></li>
             </ul>
             <div class="search-container">
@@ -76,7 +76,7 @@
                     <h4>Product Name</h4>
                     <p>Order Date: 01/01/2023</p>
                     <p>Status: Delivered</p>
-                    <button class="view-details">View Details</button>
+                    <a href=<?php echo htmlspecialchars($GLOBALS["product_detail"]); ?>><button class="view-details">View Details</button></a>
                 </div>
             </div>
             <!-- Additional order items can be added here -->

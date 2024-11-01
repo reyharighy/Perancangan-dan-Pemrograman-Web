@@ -5,3 +5,4 @@
     $GLOBALS["cart_url"] = "http://localhost/project/Perancangan-dan-Pemrograman-Web/cart/index.php";
     $GLOBALS["profile_url"] = "http://localhost/project/Perancangan-dan-Pemrograman-Web/home-product/Profile/profile.php";
     $GLOBALS["edit_profile_url"] = "http://localhost/project/Perancangan-dan-Pemrograman-Web/home-product/Profile/edit.php";
+    $GLOBALS["product_detail"] = "http://localhost/project/Perancangan-dan-Pemrograman-Web/home-product/Product/index.php";
