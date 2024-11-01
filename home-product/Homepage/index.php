@@ -76,124 +76,73 @@
     <div id="blank"></div>
 
     <!-- Offers Section -->
-    <section class="offers" id="offers">
+    <section class="offers">
         <h2>Offers</h2>
         <div class="products">
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+        <?php
+        // Mengambil data produk dari database
+        $sql = "SELECT * FROM products ORDER BY id DESC";
+        $res = mysqli_query($conn, $sql);
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+        // Memeriksa apakah ada produk
+        if ($res->num_rows > 0) {
+            // Mengambil data setiap produk
+            while ($row = $res->fetch_assoc()) {
+                echo "<div class='products'>";
+                echo "<div class='product-card'>";
+                echo "<a href='#'>";
+                echo '<img src="../../kelola-produk/upload/' . $row['image'] . '" alt="' .'">';
+                echo "</a>";
+                echo "<div class='product-card-details'>";
+                echo "<a href='#'>" . htmlspecialchars($row['name']) . "</a>";
+                echo "<div class='rating'>" . "★★★★☆ <span id='rating'> 4/5</span>" . "</div>";
+                echo "<p class='price'>$" . htmlspecialchars($row['price']) . "</p>";
+                echo "</div>";
+                echo "</div>";
+                echo "</div>";
+            }
+        } else {
+            echo "Tidak ada produk.";
+        }
+        ?>
         </div>
-        <a href="#" class="view-all">View All</a>
-        <hr>
     </section>
-
+    <a href="#" class="view-all">View All</a>
+    <hr>
 
     <!-- Top Sales Section -->
-    <section class="top-sales" id="top-sales">
+    <section class="top-sales">
         <h2>Top Sales</h2>
         <div class="products">
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
+        <?php
+        // Mengambil data produk dari database
+        $sql = "SELECT * FROM products ORDER BY id DESC";
+        $res = mysqli_query($conn, $sql);
 
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/110666530_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <a href="#">
-                    <img src="../pict/99129445_p0.jpg" alt="Product"><br>
-                </a>
-                <div class="product-card-details">
-                    <a href="#">Product Name</a>
-                    <div class="rating">
-                        ★★★★☆ <span id="rating"> 4/5</span>
-                    </div>
-                    <p class="price">Price<span id="price2">Price</span><span id="discount">XX%</span></p>
-                </div>
-            </div>
-        </div>
-        <a href="#" class="view-all">View All</a>
+        // Memeriksa apakah ada produk
+        if ($res->num_rows > 0) {
+            // Mengambil data setiap produk
+            while ($row = $res->fetch_assoc()) {
+                echo "<div class='products'>";
+                echo "<div class='product-card'>";
+                echo "<a href='#'>";
+                echo '<img src="../../kelola-produk/upload/' . $row['image'] . '" alt="' .'">';
+                echo "</a>";
+                echo "<div class='product-card-details'>";
+                echo "<a href='#'>" . htmlspecialchars($row['name']) . "</a>";
+                echo "<div class='rating'>" . "★★★★☆ <span id='rating'> 4/5</span>" . "</div>";
+                echo "<p class='price'>$" . htmlspecialchars($row['price']) . "</p>";
+                echo "</div>";
+                echo "</div>";
+                echo "</div>";
+            }
+        } else {
+            echo "Tidak ada produk.";
+        }
+        ?>
     </section>
+    <a href="#" class="view-all">View All</a>
 
       <!-- Category Section -->
       <section class="category">
