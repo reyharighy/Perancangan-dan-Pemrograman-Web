@@ -1,3 +1,61 @@
+<?php 
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database_name = "produk-katalog";
+
+// Buat koneksi ke database, langsung memasukkan nama database
+$db = mysqli_connect($servername, $username, $password, $database_name);
+
+$sql = "SELECT * FROM cart_items";
+$total = "SELECT price, quantity, (price * quantity) AS total FROM cart_items";
+$harga = $db->query($total);
+$result = $db->query($sql);
+
+// Check connection
+if (!$db) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+
+$no = 1;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $productId = $_POST['product_id'];
+    
+    if (isset($_POST['delete'])) {
+        $deleteSql = "DELETE FROM cart_items WHERE product_id = ?";
+        $stmt = $db->prepare($deleteSql);
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+        $stmt->close();
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+    } else {
+        // Perbarui kuantitas produk
+        $newQuantity = (int)$_POST['quantity'];
+
+        if ($newQuantity <= 0) {
+            // Hapus data jika kuantitas 0
+            $deleteSql = "DELETE FROM cart_items WHERE product_id = ?";
+            $stmt = $db->prepare($deleteSql);
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            // Update kuantitas jika > 0
+            $updateSql = "UPDATE cart_items SET quantity = ? WHERE product_id = ?";
+            $stmt = $db->prepare($updateSql);
+            $stmt->bind_param("ii", $newQuantity, $productId);
+            $stmt->execute();
+            $stmt->close();
+        }
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,37 +102,58 @@
 
     <section>
         <div>
-            <?php include "product.html"; ?>
+            <?php 
+            if ($result->num_rows > 0) {
+                while ($tampil = $result->fetch_assoc())  {
+                        echo 
+                        '<div class="product-cart" style="
+                        margin-bottom: 3vh !important;">
+                            <div class="product-pict"></div>
+                            <div class="left-side">
+                                <h3>' . htmlspecialchars($tampil['nama']) . '</h3>
+                                <p><span style="font-weight: 600;">Type:</span>' . htmlspecialchars($tampil['category']) . '</p>
+                                <p style="font-size: 11px; margin-top: 10px;">IDR <span id="price">' . number_format(($tampil['price']*$tampil['quantity']), 0, ',', '.') . '</span></p>
+                            </div>
+                            <div class="right-side">
+                            <form method="POST">
+                            <input type="hidden" name="product_id" value="' . $tampil['product_id'] . '">
+                                <button style="background-color: #ffffff00;" type="submit" name="delete" class="delete-button">
+                                    <img id="trash-icon" src="img/trash.png">
+                                </button>
+                            </form>
+                            <form method="POST" id="quantity">
+                            <input type="hidden" name="product_id" value="' . $tampil['product_id'] . '">
+                            
+                            <button type="submit" name="quantity" value="' . max(0, $tampil['quantity'] - 1) . '" class="tambah-kurang">-</button>
+                            
+                            <span>' . $tampil['quantity'] . '</span>
+                            
+                            <button type="submit" name="quantity" value="' . ($tampil['quantity'] + 1) . '" class="tambah-kurang">+</button>
+                            </form>
+                            </div>
+                            </div>';
+                        $no++;
+                    
+                }
+            } else {
+                echo "Data kosong";
+            }
+            
+            $db->close();
+            ?>
         </div>
         
         <div class="order-summary">
-            <h2>Order Summary</h2>
             <div class="price">
                 <p>Sub-total</p>
-                <p>IDR<span id="subtotal-price">0.000,00</span></p>
-            </div>
-            <div class="price">
-                <p>Discount</p>
-                <p>IDR<span id="subtotal-price">0.000,00</span></p>
-            </div>
-            <div class="price">
-                <p>Delivery Fee</p>
-                <p>IDR<span id="subtotal-price">0.000,00</span></p>
-            </div>
-            <div class="garis"></div>
-            <div class="price">
-                <p>Total</p>
-                <p>IDR<span id="total-price">0.000,00</span></p>
-            </div>
-
-            <div>
-                <form class="input-discount">
-                    <div id="search-disc">
-                        <img src="img/discount.png">
-                        <input type="text" placeholder="Add promo code">
-                    </div>
-                    <input type="button" value="Apply">
-                </form>
+                <?php 
+                if ($harga->num_rows > 0) {
+                    $subtotal = 0;
+                    while ($row = $harga->fetch_assoc()) {
+                        $subtotal += $row['price']*$row['quantity'];
+                    }
+                    echo '<p>IDR<span id="subtotal-price">'. number_format($subtotal, 0, ',', '.'). '</span></p>';
+                    }?>
             </div>
 
             <button id="CO">Go to Checkout</button>

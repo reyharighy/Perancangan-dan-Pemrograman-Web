@@ -5,6 +5,7 @@
 
 button, a, .tambah-kurang, input[type=button]{
     cursor: pointer;
+    border: none;
 }
 
 body{
@@ -104,16 +105,20 @@ section{
 
 /*produk-produk dalam cart*/
 .product-pict{
-    width: 15vw;
-    height: 15vw;
+    max-width: 15vw;
+    max-height: 15vw;
+    min-width: 15vw;
+    min-height: 15vw;
     border: 0.5px solid #00000039;
     border-radius: 12px;
     margin-right: 1.5vw;
 }
 
-.product-cart{
+.product-cart{ 
     display: flex;
     padding: 2vw 2vw;
+    min-width: 35vw;
+    max-width: 35vw;
 }
 
 .product-cart h3, .product-cart p{
@@ -121,10 +126,14 @@ section{
 }
 
 #quantity{
+    max-width: 7.5vw;
+    min-width: 7.5vw;
     display: flex;
+    align-items: center;
     background-color: #F0F0F0;
     padding: 0.5vh 2vh;
     border-radius: 20px;
+    justify-content: space-between;
 }
 
 #quantity div{
@@ -133,6 +142,7 @@ section{
 }
 
 .tambah-kurang{
+    height: 3vw;
     font-size: 26px;
 }
 
@@ -149,8 +159,10 @@ section{
 
 /*order sum*/
 .order-summary{
+    right: 0;
     width: 35vw;
     padding: 1.5vh 2vw;
+    height: fit-content;
 }
 
 .order-summary, .product-cart{
@@ -165,11 +177,6 @@ section{
 .garis{
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-collapse: collapse;
-}
-
-.price{
-    display: flex;
-    justify-content: space-between;
 }
 
 .input-discount{
